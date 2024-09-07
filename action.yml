@@ -1,0 +1,52 @@
+name: "XML Formatter Action"
+description: "Formats XML files using xmllint with options for indentation and verbosity."
+author: "Juliette Folmer and Vidit Agrawal"
+inputs:
+  paths:
+    description: "Paths to the XML files or directories to format"
+    required: true
+  fix:
+    description: "Fix the XML formatting (true or false)"
+    required: false
+    default: "false"
+  indentation:
+    description: "Set indentation type (space or tab)"
+    required: false
+    default: "space"
+  space_count:
+    description: "Number of spaces for indentation (default: 4)"
+    required: false
+    default: "4"
+  verbose:
+    description: "Enable verbose mode"
+    required: false
+    default: "false"
+  quiet:
+    description: "Enable quiet mode"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up environment
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
+    - name: Run XML Formatter
+      shell: bash
+      run: |
+        chmod +x ./xml_formatter.sh
+        ./xml_formatter.sh ${{ inputs.fix == 'true' && echo '-f' }} \
+        -i ${{ inputs.indentation }} \
+        -s ${{ inputs.space_count }} \
+        ${{ inputs.verbose == 'true' && echo '-v' }} \
+        ${{ inputs.quiet == 'true' && echo '-q' }} \
+        ${{ inputs.paths }}
+
+branding:
+  icon: "code"
+  color: "blue"
