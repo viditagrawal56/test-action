@@ -39,13 +39,22 @@ runs:
     - name: Run XML Formatter
       shell: bash
       run: |
-        chmod +x ./xml_formatter.sh
-        ./xml_formatter.sh ${{ inputs.fix == 'true' && echo '-f' }} \
-        -i ${{ inputs.indentation }} \
-        -s ${{ inputs.space_count }} \
-        ${{ inputs.verbose == 'true' && echo '-v' }} \
-        ${{ inputs.quiet == 'true' && echo '-q' }} \
-        ${{ inputs.paths }}
+        FIX_OPTION=""
+        if [ "${{ inputs.fix }}" = "true" ]; then
+          FIX_OPTION="-f"
+        fi
+
+        VERBOSE_OPTION=""
+        if [ "${{ inputs.verbose }}" = "true" ]; then
+          VERBOSE_OPTION="-v"
+        fi
+
+        QUIET_OPTION=""
+        if [ "${{ inputs.quiet }}" = "true" ]; then
+          QUIET_OPTION="-q"
+        fi
+
+        ./xml_formatter.sh $FIX_OPTION -i "${{ inputs.indentation }}" -s "${{ inputs.space_count }}" $VERBOSE_OPTION $QUIET_OPTION "${{ inputs.paths }}"
 
 branding:
   icon: "code"
