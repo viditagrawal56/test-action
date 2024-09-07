@@ -36,6 +36,12 @@ runs:
       shell: bash
       run: sudo apt-get update && sudo apt-get install -y libxml2-utils
 
+    - name: Set GitHub Path
+      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+      shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+
     - name: Run XML Formatter
       shell: bash
       run: |
@@ -53,7 +59,7 @@ runs:
         if [ "${{ inputs.quiet }}" = "true" ]; then
           QUIET_OPTION="-q"
         fi
-
+        chmod +x ./xml_formatter.sh
         ./xml_formatter.sh $FIX_OPTION -i "${{ inputs.indentation }}" -s "${{ inputs.space_count }}" $VERBOSE_OPTION $QUIET_OPTION "${{ inputs.paths }}"
 
 branding:
