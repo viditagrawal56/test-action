@@ -59,8 +59,8 @@ runs:
         if [ "${{ inputs.quiet }}" = "true" ]; then
           QUIET_OPTION="-q"
         fi
-        chmod +x ./xml_formatter.sh
-        ./xml_formatter.sh $FIX_OPTION -i "${{ inputs.indentation }}" -s "${{ inputs.space_count }}" $VERBOSE_OPTION $QUIET_OPTION "${{ inputs.paths }}"
+        chmod +x ${{ github.action_path }}/xml_formatter.sh
+        ${{ github.action_path }}/xml_formatter.sh $FIX_OPTION -i "${{ inputs.indentation }}" -s "${{ inputs.space_count }}" $VERBOSE_OPTION $QUIET_OPTION "${{ inputs.paths }}"
 
 branding:
   icon: "code"
