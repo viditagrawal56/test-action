@@ -62,6 +62,19 @@ runs:
         chmod +x ${{ github.action_path }}/xml_formatter.sh
         ${{ github.action_path }}/xml_formatter.sh $FIX_OPTION -i "${{ inputs.indentation }}" -s "${{ inputs.space_count }}" $VERBOSE_OPTION $QUIET_OPTION "${{ inputs.paths }}"
 
+        if git diff --exit-code; then
+          echo "Files were not modified."
+          echo "files_modified=false" >> $GITHUB_ENV
+        else
+          echo "Files were modified."
+          echo "files_modified=true" >> $GITHUB_ENV
+        fi
+
+outputs:
+  files_modified:
+    description: "Indicates if files were modified"
+    value: ${{ env.files_modified }}
+
 branding:
   icon: "code"
   color: "blue"
