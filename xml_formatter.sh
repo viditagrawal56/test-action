@@ -27,13 +27,13 @@ EOF
 }
 
 update_progress() {
-    local current=$1 total=$2 width=50
+    local current=$1 total=$2 width=20
     local percentage=$((current * 100 / total))
     local completed=$((width * current / total))
     local remaining=$((width - completed))
 
     printf "\r[%s%s] %d%% (%d/%d)" \
-        "$(printf '#%.0s' $(seq 1 $completed))" \
+        "$(printf '.%.0s' $(seq 1 $completed))" \
         "$(printf '.%.0s' $(seq 1 $remaining))" \
         "$percentage" "$current" "$total"
 }
