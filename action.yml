@@ -59,21 +59,25 @@ runs:
         if [ "${{ inputs.quiet }}" = "true" ]; then
           QUIET_OPTION="-q"
         fi
+
         chmod +x ${{ github.action_path }}/xml_formatter.sh
         ${{ github.action_path }}/xml_formatter.sh $FIX_OPTION -i "${{ inputs.indentation }}" -s "${{ inputs.space_count }}" $VERBOSE_OPTION $QUIET_OPTION "${{ inputs.paths }}"
 
-        if git diff --exit-code; then
-          echo "Files were not modified."
-          echo "files_modified=false" >> $GITHUB_ENV
+    - name: Check for changes (determine if any files were modified)
+      shell: bash
+      id: check_changes
+      run: |
+        git diff --quiet || echo "true" > /tmp/files_changed
+        if [ -f /tmp/files_changed ]; then
+          echo "files_fixed=true" >> $GITHUB_OUTPUT
         else
-          echo "Files were modified."
-          echo "files_modified=true" >> $GITHUB_ENV
+          echo "files_fixed=false" >> $GITHUB_OUTPUT
         fi
 
 outputs:
-  files_modified:
-    description: "Indicates if files were modified"
-    value: ${{ env.files_modified }}
+  xml_files_update_detected:
+    description: "Indicates if any XML files were fixed (true/false)"
+    value: ${{ steps.check_changes.outputs.files_fixed }}
 
 branding:
   icon: "code"
